@@ -1,5 +1,6 @@
+#install.packages('rsconnect')
 library(shiny)
-library(ggplot2)
+library("ggplot2")
 
 # Z test power calculator
 power_calculator_proportion_z_test <- function(p1, p0, alpha=0.05, N){
@@ -83,8 +84,6 @@ ui <- shinyUI(fluidPage(
                       br(), 
                       "Users have the flexibility to select the number of simulation iterations and define their desired probability of Type 1 error and Power.",
                       br(),
-                      "* More simulation runs may be time-comsuming",
-                      br(),
                       br(), 
                       "Users can select their preferred proportional equality test for analysis. For small sample sizes, we recommend using Fisher's exact test due to its accuracy in such scenarios. On the other hand, for large sample sizes, the chi-squared test is recommended for its computational efficiency. To balance computation time, we set the simulation iterations for Fisher's exact test relatively smaller.",
                       br(),
@@ -97,7 +96,14 @@ ui <- shinyUI(fluidPage(
                       br(),
                       "The second plot assesses the robustness of the simulation regarding the target power. By using different random seeds, the simulation calculates the average power and corresponding number of subjects. A confidence interval is constructed to examine the variability of power.",
                       br(),
-                      "The summary presents the results of power and variance from the robustness test conducted through simulations."
+                      "The summary presents the results of power and variance from the robustness test conducted through simulations.",
+                      br(),
+                      br(),
+                      "*Notice:",
+                      br(),
+                      "Increasing the number of simulation runs may result in longer computation times.",
+                      br(),
+                      "The robustness test may require some time to complete."
                       ),
              radioButtons("methods",label = "Methods for Testing Equality of Proportions",c("Chi-squared test"="chi", "Fisher's exact test"="fisher"))
            ))),
@@ -546,4 +552,3 @@ server <- shinyServer(
 
 # Run the application 
 shinyApp(ui = ui, server = server)
-
