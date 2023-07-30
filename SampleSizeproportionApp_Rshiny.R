@@ -82,10 +82,10 @@ ui <- shinyUI(fluidPage(
            wellPanel(
              helpText(" This application is specifically designed to assist researchers and practitioners in efficiently estimating the required sample size for comparing proportions between two groups, while considering the desired power and significance level.",  
                       br(), 
-                      "Users have the flexibility to select the number of simulation iterations and define their desired probability of Type 1 error and Power.",
+                      "In this app, users have the flexibility to choose the number of simulation iterations and define their desired probability of Type 1 error and Power.",
                       br(),
                       br(), 
-                      "Users can select their preferred proportional equality test for analysis. For small sample sizes, we recommend using Fisher's exact test due to its accuracy in such scenarios. On the other hand, for large sample sizes, the chi-squared test is recommended for its computational efficiency. To balance computation time, we set the simulation iterations for Fisher's exact test relatively smaller.",
+                      "For analysis, users can select their preferred proportional equality test. For small sample sizes, we recommend using Fisher's exact test due to its accuracy in such scenarios. Alternatively, for large sample sizes, the chi-squared test is recommended for its computational efficiency. To optimize computation time, we have set the simulation iterations for Fisher's exact test relatively smaller.",
                       br(),
                       br(),
                       "The first resulting plot displays the simulation outcomes, providing insights into power analysis and sample size estimation based on predetermined parameters.",
