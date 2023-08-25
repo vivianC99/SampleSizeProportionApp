@@ -155,11 +155,11 @@ ui <- shinyUI(fluidPage(
                  fluidRow(
                    p(withMathJax("$$\\text{The minimum sample size required for each group to achieve the target power:}$$")),
                    wellPanel(htmlOutput("target_N")),
-                   p(withMathJax("$$\\text{The closest power value to the target after simulating multiple iterations with different random seeds: }(\\hat{P})$$")),
+                   p(withMathJax("$$\\text{The closest power value to the target after simulating multiple iterations with different random seeds: }(\\hat{P}^*)$$")),
                    wellPanel(htmlOutput("target_robust")),
-                   p(withMathJax("$$\\text{Emperical variance of power from randomized simulation under target: }$$")),
+                   p(withMathJax("$$\\text{Empirical variance of power from randomized simulation under target: }$$")),
                    wellPanel(htmlOutput("var_ran")),
-                   p(withMathJax("$$\\text{Estimated variance of power from sample proportion formula under target: }(\\frac{\\hat{P}*(1-\\hat{P})}{N})$$")),
+                   p(withMathJax("$$\\text{Estimated variance of power from sample proportion formula under target: }(\\frac{{\\hat{P}^*}*(1-\\hat{P}^*)}{N})$$")),
                    wellPanel(htmlOutput("var"))
                  )))))))
 
@@ -169,7 +169,7 @@ ui <- shinyUI(fluidPage(
 server <- shinyServer(
   function(input, output) {
     
-    
+
     betas <- eventReactive(input$action,{
       
       
@@ -219,301 +219,301 @@ server <- shinyServer(
     
     
     observeEvent(input$action,{
-      output$powerplot <- renderPlot({
-        if(input$methods == "chi"){
-          p0 <- input$p0_c
-          p1 <- input$p1_c
-          runs <- input$runs_c
-          target <- input$target_c
-          maxn <- input$maxn_c
-          Ns <- as.matrix(c(seq(1, maxn, 1)))
-          alpha <- switch(input$alpha_c,
-                          "Alpha = 0.01" = 0.01, 
-                          "Alpha = 0.025" = 0.025, 
-                          "Alpha = 0.05" = 0.05, 
-                          "Alpha = 0.10" = 0.10)
-          results <- betas()
-          plot(NA, ylim=c(0,1), xlim=c(0,maxn*2), main=paste0("Hypothetical Treatment Effect(Difference) = ",abs(round((p1-p0),3))," Percentage Points"),
-               ylab="Power (Probability of Statistical Significance)", xlab="Total Number of Subjects")
-          lines(Ns*2, results$betas_sim, lwd=4,col="#1B98E059")
-          lines(Ns*2, apply(X=Ns,MARGIN = 1,FUN = power_calculator_proportion_z_test, p1=p1, p0=p0,alpha=alpha), lwd=4, col="grey")
-          abline(h=target, col="red", lty=2)
-          legend("bottomright", inset=.03, title="approaches",
-                 c("Chi-squared test Simulation","Z-test"), fill=c("#1B98E059","grey"), horiz=TRUE)
-        }
-        else if(input$methods == "fisher"){
-          p0 <- input$p0_f
-          p1 <- input$p1_f
-          runs <- input$runs_f
-          target <- input$target_f
-          maxn <- input$maxn_f
-          Ns <- as.matrix(c(seq(1, maxn, 1)))
-          alpha <- switch(input$alpha_f,
-                          "Alpha = 0.01" = 0.01, 
-                          "Alpha = 0.025" = 0.025, 
-                          "Alpha = 0.05" = 0.05, 
-                          "Alpha = 0.10" = 0.10)
-          results <- betas()
-          plot(NA, ylim=c(0,1), xlim=c(0,maxn*2), main=paste0("Hypothetical Treatment Effect(Difference) = ",abs(round((p1-p0),3))," Percentage Points"),
-               ylab="Power (Probability of Statistical Significance)", xlab="Total Number of Subjects")
-          lines(Ns*2, results$betas_sim, lwd=4,col="#1B98E059")
-          lines(Ns*2, apply(X=Ns,MARGIN = 1,FUN = power_calculator_proportion_z_test, p1=p1, p0=p0,alpha=alpha), lwd=4, col="grey")
-          abline(h=target, col="red", lty=2)
-          legend("bottomright", inset=.05, title="approaches",
-                 c("Fisher's exact test Simulation","Z-test"), fill=c("#1B98E059","grey"), horiz=TRUE)
-        }
-      })
+    output$powerplot <- renderPlot({
+      if(input$methods == "chi"){
+        p0 <- input$p0_c
+        p1 <- input$p1_c
+        runs <- input$runs_c
+        target <- input$target_c
+        maxn <- input$maxn_c
+        Ns <- as.matrix(c(seq(1, maxn, 1)))
+        alpha <- switch(input$alpha_c,
+                        "Alpha = 0.01" = 0.01, 
+                        "Alpha = 0.025" = 0.025, 
+                        "Alpha = 0.05" = 0.05, 
+                        "Alpha = 0.10" = 0.10)
+        results <- betas()
+        plot(NA, ylim=c(0,1), xlim=c(0,maxn*2), main=paste0("Hypothetical Treatment Effect(Difference) = ",abs(round((p1-p0),3))," Percentage Points"),
+             ylab="Power (Probability of Statistical Significance)", xlab="Total Number of Subjects")
+        lines(Ns*2, results$betas_sim, lwd=4,col="#1B98E059")
+        lines(Ns*2, apply(X=Ns,MARGIN = 1,FUN = power_calculator_proportion_z_test, p1=p1, p0=p0,alpha=alpha), lwd=4, col="grey")
+        abline(h=target, col="red", lty=2)
+        legend("bottomright", inset=.03, title="approaches",
+               c("Chi-squared test Simulation","Z-test"), fill=c("#1B98E059","grey"), horiz=TRUE)
+      }
+      else if(input$methods == "fisher"){
+        p0 <- input$p0_f
+        p1 <- input$p1_f
+        runs <- input$runs_f
+        target <- input$target_f
+        maxn <- input$maxn_f
+        Ns <- as.matrix(c(seq(1, maxn, 1)))
+        alpha <- switch(input$alpha_f,
+                        "Alpha = 0.01" = 0.01, 
+                        "Alpha = 0.025" = 0.025, 
+                        "Alpha = 0.05" = 0.05, 
+                        "Alpha = 0.10" = 0.10)
+        results <- betas()
+        plot(NA, ylim=c(0,1), xlim=c(0,maxn*2), main=paste0("Hypothetical Treatment Effect(Difference) = ",abs(round((p1-p0),3))," Percentage Points"),
+             ylab="Power (Probability of Statistical Significance)", xlab="Total Number of Subjects")
+        lines(Ns*2, results$betas_sim, lwd=4,col="#1B98E059")
+        lines(Ns*2, apply(X=Ns,MARGIN = 1,FUN = power_calculator_proportion_z_test, p1=p1, p0=p0,alpha=alpha), lwd=4, col="grey")
+        abline(h=target, col="red", lty=2)
+        legend("bottomright", inset=.05, title="approaches",
+               c("Fisher's exact test Simulation","Z-test"), fill=c("#1B98E059","grey"), horiz=TRUE)
+      }
+    })
+    
+    output$powerplot_robust <- renderPlot({
+      if(input$methods == "chi"){
+        target <- input$target_c
+        results <- betas()
+        # Create DataFrame for Plotting
+        DF <- data.frame(Nr=results$Nr,Mean=apply(results$betas_robust,2,mean), U=apply(results$betas_robust,2,U), L=apply(results$betas_robust,2,L))
+        # ggplot2 LineGraph with Shading Confidence Interval
+        ggplot(DF, aes(Nr*2, Mean)) +                                     
+          geom_line(color = "#1B98E059", size = 1) +
+          geom_ribbon(aes(ymin=L, ymax=U), alpha=0.1, fill = "#6897bb", 
+                      color = "black", linetype = "dotted") +
+          geom_hline(yintercept=target, color="red") +
+          labs(x="Total Number of Subjects", y="Power (Probability of Statistical Significance)",
+               title = "Confidence Interval of power under different random seeds iterations") +
+          theme_bw()
+      }
+      else if(input$methods == "fisher"){
+        target <- input$target_f
+        results <- betas()
+        # Create DataFrame for Plotting
+        DF <- data.frame(Nr=results$Nr,Mean=apply(results$betas_robust,2,mean), U=apply(results$betas_robust,2,U), L=apply(results$betas_robust,2,L))
+        # ggplot2 LineGraph with Shading Confidence Interval
+        ggplot(DF, aes(Nr*2, Mean)) +                                     
+          geom_line(color = "#1B98E059", size = 1) +
+          geom_ribbon(aes(ymin=L, ymax=U), alpha=0.1, fill = "#6897bb", 
+                      color = "black", linetype = "dotted") +
+          geom_hline(yintercept=target, color="red") +
+          labs(x="Total Number of Subjects", y="Power (Probability of Statistical Significance)",
+               title = "Confidence Interval of power under different random seeds iterations") +
+          theme_bw()
+      }
       
-      output$powerplot_robust <- renderPlot({
-        if(input$methods == "chi"){
-          target <- input$target_c
-          results <- betas()
-          # Create DataFrame for Plotting
-          DF <- data.frame(Nr=results$Nr,Mean=apply(results$betas_robust,2,mean), U=apply(results$betas_robust,2,U), L=apply(results$betas_robust,2,L))
-          # ggplot2 LineGraph with Shading Confidence Interval
-          ggplot(DF, aes(Nr*2, Mean)) +                                     
-            geom_line(color = "#1B98E059", size = 1) +
-            geom_ribbon(aes(ymin=L, ymax=U), alpha=0.1, fill = "#6897bb", 
-                        color = "black", linetype = "dotted") +
-            geom_hline(yintercept=target, color="red") +
-            labs(x="Total Number of Subjects", y="Power (Probability of Statistical Significance)",
-                 title = "Confidence Interval of power under different random seeds iterations") +
-            theme_bw()
+    })
+    
+    
+    
+    
+    output$nrequired_sim <- renderUI({  
+      if(input$methods == "chi"){
+        p0 <- input$p0_c
+        p1 <- input$p1_c
+        maxn <- input$maxn_c
+        target <- input$target_c
+        alpha <- switch(input$alpha_c,
+                        "Alpha = 0.01" = 0.01, 
+                        "Alpha = 0.025" = 0.025, 
+                        "Alpha = 0.05" = 0.05, 
+                        "Alpha = 0.10" = 0.10)
+        Ns <- as.matrix(c(seq(1, maxn, 1)))
+        results<- betas()
+        nrequired_sim <-Ns[which.max(results$betas_sim>=target)]
+        prequired <- results$betas_sim[which.max(results$betas_sim>=target)]
+        seed <- results$seed
+        if(prequired<target*0.95){
+          str1 <- paste0("The Maximum Number of Subjects may be too small, try to enlarge it.")
         }
-        else if(input$methods == "fisher"){
-          target <- input$target_f
-          results <- betas()
-          # Create DataFrame for Plotting
-          DF <- data.frame(Nr=results$Nr,Mean=apply(results$betas_robust,2,mean), U=apply(results$betas_robust,2,U), L=apply(results$betas_robust,2,L))
-          # ggplot2 LineGraph with Shading Confidence Interval
-          ggplot(DF, aes(Nr*2, Mean)) +                                     
-            geom_line(color = "#1B98E059", size = 1) +
-            geom_ribbon(aes(ymin=L, ymax=U), alpha=0.1, fill = "#6897bb", 
-                        color = "black", linetype = "dotted") +
-            geom_hline(yintercept=target, color="red") +
-            labs(x="Total Number of Subjects", y="Power (Probability of Statistical Significance)",
-                 title = "Confidence Interval of power under different random seeds iterations") +
-            theme_bw()
+        else{
+          str1 <- paste0("In order to achieve ", target*100, "% power, you'll need to use a Total sample size of at least ", nrequired_sim*2," under random seed of ", seed, " through simulation.")
         }
         
-      })
-      
-      
-      
-      
-      output$nrequired_sim <- renderUI({  
-        if(input$methods == "chi"){
-          p0 <- input$p0_c
-          p1 <- input$p1_c
-          maxn <- input$maxn_c
-          target <- input$target_c
-          alpha <- switch(input$alpha_c,
-                          "Alpha = 0.01" = 0.01, 
-                          "Alpha = 0.025" = 0.025, 
-                          "Alpha = 0.05" = 0.05, 
-                          "Alpha = 0.10" = 0.10)
-          Ns <- as.matrix(c(seq(1, maxn, 1)))
-          results<- betas()
-          nrequired_sim <-Ns[which.max(results$betas_sim>=target)]
-          prequired <- results$betas_sim[which.max(results$betas_sim>=target)]
-          seed <- results$seed
-          if(prequired<target*0.95){
-            str1 <- paste0("The Maximum Number of Subjects may be too small, try to enlarge it.")
-          }
-          else{
-            str1 <- paste0("In order to achieve ", target*100, "% power, you'll need to use a Total sample size of at least ", nrequired_sim*2," under random seed of ", seed, " through simulation.")
-          }
-          
-          HTML(str1)
+        HTML(str1)
+      }
+      else if(input$methods == "fisher"){
+        p0 <- input$p0_f
+        p1 <- input$p1_f
+        maxn <- input$maxn_f
+        target <- input$target_f
+        alpha <- switch(input$alpha_f,
+                        "Alpha = 0.01" = 0.01, 
+                        "Alpha = 0.025" = 0.025, 
+                        "Alpha = 0.05" = 0.05, 
+                        "Alpha = 0.10" = 0.10)
+        Ns <- as.matrix(c(seq(1, maxn, 1)))
+        results <- betas()
+        nrequired_sim <-Ns[which.max(results$betas_sim>=target)]
+        prequired <- results$betas_sim[which.max(results$betas_sim>=target)]
+        seed <- results$seed
+        if(prequired<target*0.95){
+          str1 <- paste0("The Maximum Number of Subjects may be too small, try to enlarge it.")
         }
-        else if(input$methods == "fisher"){
-          p0 <- input$p0_f
-          p1 <- input$p1_f
-          maxn <- input$maxn_f
-          target <- input$target_f
-          alpha <- switch(input$alpha_f,
-                          "Alpha = 0.01" = 0.01, 
-                          "Alpha = 0.025" = 0.025, 
-                          "Alpha = 0.05" = 0.05, 
-                          "Alpha = 0.10" = 0.10)
-          Ns <- as.matrix(c(seq(1, maxn, 1)))
-          results <- betas()
-          nrequired_sim <-Ns[which.max(results$betas_sim>=target)]
-          prequired <- results$betas_sim[which.max(results$betas_sim>=target)]
-          seed <- results$seed
-          if(prequired<target*0.95){
-            str1 <- paste0("The Maximum Number of Subjects may be too small, try to enlarge it.")
-          }
-          else{
-            str1 <- paste0("In order to achieve ", target*100, "% power, you'll need to use a Total sample size of at least ", nrequired_sim*2," under random seed of ", seed, " through simulation.")
-          }
-          HTML(str1)
+        else{
+          str1 <- paste0("In order to achieve ", target*100, "% power, you'll need to use a Total sample size of at least ", nrequired_sim*2," under random seed of ", seed, " through simulation.")
+        }
+        HTML(str1)
+      }
+      
+      
+    })
+    output$nrequired_z_test<- renderUI({ 
+      if(input$methods == "chi"){
+        p0 <- input$p0_c
+        p1 <- input$p1_c
+        maxn <- input$maxn_c
+        target <- input$target_c
+        alpha <- switch(input$alpha_c,
+                        "Alpha = 0.01" = 0.01, 
+                        "Alpha = 0.025" = 0.025, 
+                        "Alpha = 0.05" = 0.05, 
+                        "Alpha = 0.10" = 0.10)
+        Ns <- as.matrix(c(seq(1, maxn, 1)))
+        results <- betas()
+        nrequired_z_test <-Ns[which.max(results$betas_z>=target)]
+        
+        str1 <- paste0("In order to achieve ", target*100, "% power, you'll need to use a Total sample size of at least ", nrequired_z_test*2," by Z test general formula.")
+        HTML(str1)
+      }
+      else if(input$methods == "fisher"){
+        p0 <- input$p0_f
+        p1 <- input$p1_f
+        maxn <- input$maxn_f
+        target <- input$target_f
+        alpha <- switch(input$alpha_f,
+                        "Alpha = 0.01" = 0.01, 
+                        "Alpha = 0.025" = 0.025, 
+                        "Alpha = 0.05" = 0.05, 
+                        "Alpha = 0.10" = 0.10)
+        Ns <- as.matrix(c(seq(1, maxn, 1)))
+        results <- betas()
+        nrequired_z_test <-Ns[which.max(results$betas_z>=target)]
+        
+        str1 <- paste0("In order to achieve ", target*100, "% power, you'll need to use a Total sample size of at least ", nrequired_z_test*2," by Z test general formula.")
+        HTML(str1)
+      }
+    })
+    
+    output$nrequired_robust <- renderUI({  
+      if(input$methods == "chi"){
+        target <- input$target_c
+        results <- betas()
+        Nr <- results$Nr
+        Mean <- apply(results$betas_robust,2,mean)
+        nrequired_robust <-Nr[which.max(Mean>=target)]
+        prequired_robust <- Mean[which.max(Mean>=target)]
+        if(prequired_robust<target*0.95){
+          str1 <- paste0("The iterations may be too small, try to enlarge the simulation runs.")
+        }
+        else{
+          str1 <- paste0("In order to achieve ", target*100, "% power, you'll need to use a Average Total sample size of at least ", nrequired_robust*2, " through simulation.")
         }
         
+        HTML(str1)
+      }
+      else if(input$methods == "fisher"){
+        target <- input$target_f
+        results <- betas()
+        Nr <- results$Nr
+        Mean <- apply(results$betas_robust,2,mean)
+        nrequired_robust <-Nr[which.max(Mean>=target)]
+        prequired_robust <- Mean[which.max(Mean>=target)]
+        if(prequired_robust<target*0.9){
+          str1 <- paste0("The iterations may be too small or sample size is large, consider using the chi-squared test.")
+          
+        }
+        else{
+          str1 <- paste0("In order to achieve ", target*100, "% power, you'll need to use a Average Total sample size of at least ", nrequired_robust*2, " through simulation.")
+        }
+        HTML(str1)
+      }
+    })
+    
+    output$target_N <- renderUI({  
+      if(input$methods == "chi"){      
+        target <- input$target_c
+        results <- betas()
+        Mean <- apply(results$betas_robust,2,mean)
+        Nr <- results$Nr
+        target_N <- Nr[which.max(Mean>=target)]
+        str1 <- paste0(target_N)
+        HTML(str1)
+      }
+      else if(input$methods == "fisher"){      
+        target <- input$target_f
+        results <- betas()
+        Mean <- apply(results$betas_robust,2,mean)
+        Nr <- results$Nr
+        target_N <- Nr[which.max(Mean>=target)]
+        str1 <- paste0(target_N)
+        HTML(str1)
+      }
+    })
+    
+    output$target_robust <- renderUI({  
+      if(input$methods == "chi"){      
+        target <- input$target_c
+        results <- betas()
+        Mean <- apply(results$betas_robust,2,mean)
+        target_robust <- Mean[which.max(Mean>=target)]
+        str1 <- paste0(target_robust)
+        HTML(str1)
+      }
+      else if(input$methods == "fisher"){      
+        target <- input$target_f
+        results <- betas()
+        Mean <- apply(results$betas_robust,2,mean)
+        target_robust <- Mean[which.max(Mean>=target)]
+        str1 <- paste0(target_robust)
+        HTML(str1)
+      }
+    })
+    
+    
+    output$var_ran <- renderUI({  
+      if(input$methods == "chi"){      
+        target <- input$target_c
+        results <- betas()
+        Mean <- apply(results$betas_robust,2,mean)
+        Var <- apply(results$betas_robust,2,var)
+        var_ran <- Var[which.max(Mean>=target)]
+        str1 <- paste0(round(var_ran,7))
         
-      })
-      output$nrequired_z_test<- renderUI({ 
-        if(input$methods == "chi"){
-          p0 <- input$p0_c
-          p1 <- input$p1_c
-          maxn <- input$maxn_c
-          target <- input$target_c
-          alpha <- switch(input$alpha_c,
-                          "Alpha = 0.01" = 0.01, 
-                          "Alpha = 0.025" = 0.025, 
-                          "Alpha = 0.05" = 0.05, 
-                          "Alpha = 0.10" = 0.10)
-          Ns <- as.matrix(c(seq(1, maxn, 1)))
-          results <- betas()
-          nrequired_z_test <-Ns[which.max(results$betas_z>=target)]
-          
-          str1 <- paste0("In order to achieve ", target*100, "% power, you'll need to use a Total sample size of at least ", nrequired_z_test*2," by Z test general formula.")
-          HTML(str1)
-        }
-        else if(input$methods == "fisher"){
-          p0 <- input$p0_f
-          p1 <- input$p1_f
-          maxn <- input$maxn_f
-          target <- input$target_f
-          alpha <- switch(input$alpha_f,
-                          "Alpha = 0.01" = 0.01, 
-                          "Alpha = 0.025" = 0.025, 
-                          "Alpha = 0.05" = 0.05, 
-                          "Alpha = 0.10" = 0.10)
-          Ns <- as.matrix(c(seq(1, maxn, 1)))
-          results <- betas()
-          nrequired_z_test <-Ns[which.max(results$betas_z>=target)]
-          
-          str1 <- paste0("In order to achieve ", target*100, "% power, you'll need to use a Total sample size of at least ", nrequired_z_test*2," by Z test general formula.")
-          HTML(str1)
-        }
-      })
-      
-      output$nrequired_robust <- renderUI({  
-        if(input$methods == "chi"){
-          target <- input$target_c
-          results <- betas()
-          Nr <- results$Nr
-          Mean <- apply(results$betas_robust,2,mean)
-          nrequired_robust <-Nr[which.max(Mean>=target)]
-          prequired_robust <- Mean[which.max(Mean>=target)]
-          if(prequired_robust<target*0.95){
-            str1 <- paste0("The iterations may be too small, try to enlarge the simulation runs.")
-          }
-          else{
-            str1 <- paste0("In order to achieve ", target*100, "% power, you'll need to use a Average Total sample size of at least ", nrequired_robust*2, " through simulation.")
-          }
-          
-          HTML(str1)
-        }
-        else if(input$methods == "fisher"){
-          target <- input$target_f
-          results <- betas()
-          Nr <- results$Nr
-          Mean <- apply(results$betas_robust,2,mean)
-          nrequired_robust <-Nr[which.max(Mean>=target)]
-          prequired_robust <- Mean[which.max(Mean>=target)]
-          if(prequired_robust<target*0.9){
-            str1 <- paste0("The iterations may be too small or sample size is large, consider using the chi-squared test.")
-            
-          }
-          else{
-            str1 <- paste0("In order to achieve ", target*100, "% power, you'll need to use a Average Total sample size of at least ", nrequired_robust*2, " through simulation.")
-          }
-          HTML(str1)
-        }
-      })
-      
-      output$target_N <- renderUI({  
-        if(input$methods == "chi"){      
-          target <- input$target_c
-          results <- betas()
-          Mean <- apply(results$betas_robust,2,mean)
-          Nr <- results$Nr
-          target_N <- Nr[which.max(Mean>=target)]
-          str1 <- paste0(target_N)
-          HTML(str1)
-        }
-        else if(input$methods == "fisher"){      
-          target <- input$target_f
-          results <- betas()
-          Mean <- apply(results$betas_robust,2,mean)
-          Nr <- results$Nr
-          target_N <- Nr[which.max(Mean>=target)]
-          str1 <- paste0(target_N)
-          HTML(str1)
-        }
-      })
-      
-      output$target_robust <- renderUI({  
-        if(input$methods == "chi"){      
-          target <- input$target_c
-          results <- betas()
-          Mean <- apply(results$betas_robust,2,mean)
-          target_robust <- Mean[which.max(Mean>=target)]
-          str1 <- paste0(target_robust)
-          HTML(str1)
-        }
-        else if(input$methods == "fisher"){      
-          target <- input$target_f
-          results <- betas()
-          Mean <- apply(results$betas_robust,2,mean)
-          target_robust <- Mean[which.max(Mean>=target)]
-          str1 <- paste0(target_robust)
-          HTML(str1)
-        }
-      })
-      
-      
-      output$var_ran <- renderUI({  
-        if(input$methods == "chi"){      
-          target <- input$target_c
-          results <- betas()
-          Mean <- apply(results$betas_robust,2,mean)
-          Var <- apply(results$betas_robust,2,var)
-          var_ran <- Var[which.max(Mean>=target)]
-          str1 <- paste0(round(var_ran,7))
-          
-          HTML(str1)
-        }
-        else if(input$methods == "fisher"){      
-          target <- input$target_f
-          results <- betas()
-          Mean <- apply(results$betas_robust,2,mean)
-          Var <- apply(results$betas_robust,2,var)
-          var_ran <- Var[which.max(Mean>=target)]
-          str1 <- paste0(round(var_ran,7))
-          
-          HTML(str1)
-        }
-      })
-      
-      output$var <- renderUI({  
-        if(input$methods == "chi"){      
-          target <- input$target_c
-          results <- betas()
-          Nr <- results$Nr
-          Mean <- apply(results$betas_robust,2,mean)
-          nrequired_robust <-Nr[which.max(Mean>=target)]
-          nrequired_beta <- Mean[which.max(Mean>=target)]
-          var_ran <-nrequired_beta*(1-nrequired_beta)/seednum
-          str1 <- paste0(round(var_ran,7))
-          
-          HTML(str1)
-        }
-        else if(input$methods == "fisher"){      
-          target <- input$target_f
-          results <- betas()
-          Nr <- results$Nr
-          Mean <- apply(results$betas_robust,2,mean)
-          nrequired_robust <-Nr[which.max(Mean>=target)]
-          nrequired_beta <- Mean[which.max(Mean>=target)]
-          var_ran <-nrequired_beta*(1-nrequired_beta)/seednum
-          str1 <- paste0(round(var_ran,7))
-          
-          HTML(str1)
-        }
-      })
+        HTML(str1)
+      }
+      else if(input$methods == "fisher"){      
+        target <- input$target_f
+        results <- betas()
+        Mean <- apply(results$betas_robust,2,mean)
+        Var <- apply(results$betas_robust,2,var)
+        var_ran <- Var[which.max(Mean>=target)]
+        str1 <- paste0(round(var_ran,7))
+        
+        HTML(str1)
+      }
+    })
+    
+    output$var <- renderUI({  
+      if(input$methods == "chi"){      
+        target <- input$target_c
+        results <- betas()
+        Nr <- results$Nr
+        Mean <- apply(results$betas_robust,2,mean)
+        nrequired_robust <-Nr[which.max(Mean>=target)]
+        nrequired_beta <- Mean[which.max(Mean>=target)]
+        var_ran <-nrequired_beta*(1-nrequired_beta)/seednum
+        str1 <- paste0(round(var_ran,7))
+        
+        HTML(str1)
+      }
+      else if(input$methods == "fisher"){      
+        target <- input$target_f
+        results <- betas()
+        Nr <- results$Nr
+        Mean <- apply(results$betas_robust,2,mean)
+        nrequired_robust <-Nr[which.max(Mean>=target)]
+        nrequired_beta <- Mean[which.max(Mean>=target)]
+        var_ran <-nrequired_beta*(1-nrequired_beta)/seednum
+        str1 <- paste0(round(var_ran,7))
+        
+        HTML(str1)
+      }
+    })
     })
     
     observeEvent(input$reset,{
